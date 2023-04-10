@@ -6,46 +6,36 @@ namespace ServerCore
 {
     class Program
     {
-        // 1. 근성
-        // 2. 양보
-        // 3. 갑질
-
-        static object _lock = new object();
-        static SpinLock _lock2 = new SpinLock();
-        static ReaderWriterLockSlim _lock3 = new ReaderWriterLockSlim();
-
-        // 직접 만든다
-
-        // [ ] [ ] [ ] [ ] [ ]
-        class Reward
-        {
-
-        }
-
-        // 99.999999%
-        static Reward GetRewardById(int id)
-        {
-            _lock3.EnterReadLock();
-
-            _lock3.ExitReadLock();
-
-            return null;
-        }
-
-        // 0.000001%
-        static void AddReward(Reward reward)
-        {
-            _lock3.EnterWriteLock();
-
-            _lock3.ExitWriteLock();
-        }
+        static volatile int count = 0;
+        static Lock _lock = new Lock();
 
         static void Main(string[] args)
         {
-            lock (_lock)
+            Task t1 = new Task(delegate ()
             {
+                for (int i = 0; i < 100000; i++)
+                {
+                    _lock.WriteLock();
+                    count++;
+                    _lock.WriteUnlock();
+                }
+            });
+            Task t2 = new Task(delegate ()
+            {
+                for (int i = 0; i < 100000; i++)
+                {
+                    _lock.WriteLock();
+                    count--;
+                    _lock.WriteUnlock();
+                }
+            });
 
-            }
+            t1.Start();
+            t2.Start();
+
+            Task.WaitAll(t1, t2);
+
+            Console.WriteLine(count);
         }
     }
 }
