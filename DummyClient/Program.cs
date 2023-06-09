@@ -28,8 +28,11 @@ namespace DummyClient
                     Console.WriteLine($"Connected To {socket.RemoteEndPoint.ToString()}");
 
                     // 보낸다
-                    byte[] sendBuff = Encoding.UTF8.GetBytes("Hello World!");
-                    int sendBytes = socket.Send(sendBuff);
+                    for (int i = 0; i < 5; i++)
+                    {
+                        byte[] sendBuff = Encoding.UTF8.GetBytes($"Hello World! {i}");
+                        int sendBytes = socket.Send(sendBuff);
+                    }
 
                     // 받는다
                     byte[] recvBuff = new byte[1024];
@@ -46,7 +49,7 @@ namespace DummyClient
                     Console.WriteLine(e.ToString());
                 }
 
-                Thread.Sleep(1000);
+                Thread.Sleep(100);
             }
         }
     }
