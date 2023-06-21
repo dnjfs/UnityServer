@@ -16,7 +16,9 @@ namespace DummyClient
             // 보낸다
             for (int i = 0; i < 5; i++)
             {
-                byte[] sendBuff = Encoding.UTF8.GetBytes($"Hello World! {i}");
+                byte[] sendStr = Encoding.UTF8.GetBytes($"Hello World! {i}");
+                ArraySegment<byte> sendBuff = new ArraySegment<byte>(sendStr, 0, sendStr.Length);
+
                 Send(sendBuff);
             }
         }
